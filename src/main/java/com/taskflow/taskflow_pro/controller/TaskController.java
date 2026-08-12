@@ -1,9 +1,11 @@
 package com.taskflow.taskflow_pro.controller;
 
 
+import com.taskflow.taskflow_pro.dto.TaskRequest;
 import com.taskflow.taskflow_pro.service.TaskService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class TaskController {
@@ -17,5 +19,10 @@ public class TaskController {
     public String hello(){
 
         return taskService.getHelloMessage();
+    }
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/api/tasks")
+    public TaskRequest createTask(@RequestBody @Valid TaskRequest taskRequest){
+        return taskRequest;
     }
 }
