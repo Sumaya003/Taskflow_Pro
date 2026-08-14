@@ -8,6 +8,8 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 public class TaskController {
 
@@ -21,6 +23,7 @@ public class TaskController {
 
         return taskService.getHelloMessage();
     }
+
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/api/tasks")
     public Task createTask(@RequestBody @Valid TaskRequest taskRequest){
@@ -31,5 +34,15 @@ public class TaskController {
         task.setDescription(taskRequest.getDescription());
         task.setPriority(taskRequest.getPriority());
         return taskService.saveTask(task);
+    }
+
+    @GetMapping("/api/tasks")
+    public List<Task> getAllTasks(){
+        return taskService.getAllTasks();
+    }
+
+    @GetMapping("/api/tasks/{id}")
+    public Task getTaskById(@PathVariable long id){
+        return taskService.getTaskByID(id);
     }
 }
