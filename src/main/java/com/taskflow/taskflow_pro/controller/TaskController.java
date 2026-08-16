@@ -45,4 +45,15 @@ public class TaskController {
     public Task getTaskById(@PathVariable long id){
         return taskService.getTaskByID(id);
     }
+
+    @PutMapping("/api/tasks/{id}")
+    public Task updateTask(@PathVariable long id, @RequestBody @Valid TaskRequest taskRequest){
+        return taskService.updateTask(id, taskRequest);
+    }
+
+    @DeleteMapping("/api/tasks/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteTask(@PathVariable long id){
+        taskService.deleteTask(id);
+    }
 }
