@@ -4,6 +4,8 @@ import com.taskflow.taskflow_pro.dto.TaskRequest;
 import com.taskflow.taskflow_pro.exception.TaskNotFoundException;
 import com.taskflow.taskflow_pro.model.Task;
 import com.taskflow.taskflow_pro.repository.TaskRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,8 +27,8 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
-    public List<Task> getAllTasks() {
-        return taskRepository.findAll();
+    public Page<Task> getAllTasks(Pageable pageable) {
+        return taskRepository.findAll(pageable);
     }
 
     public Task getTaskByID(long id){
