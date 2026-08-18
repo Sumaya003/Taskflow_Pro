@@ -2,6 +2,7 @@ package com.taskflow.taskflow_pro.controller;
 
 
 import com.taskflow.taskflow_pro.dto.TaskRequest;
+import com.taskflow.taskflow_pro.dto.TaskResponse;
 import com.taskflow.taskflow_pro.model.Task;
 import com.taskflow.taskflow_pro.service.TaskService;
 import jakarta.validation.Valid;
@@ -28,7 +29,7 @@ public class TaskController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/api/tasks")
-    public Task createTask(@RequestBody @Valid TaskRequest taskRequest){
+    public TaskResponse createTask(@RequestBody @Valid TaskRequest taskRequest){
 
         Task task = new Task();
 
@@ -39,17 +40,17 @@ public class TaskController {
     }
 
     @GetMapping("/api/tasks")
-    public Page<Task> getAllTasks(Pageable pageable){
+    public Page<TaskResponse> getAllTasks(Pageable pageable){
         return taskService.getAllTasks(pageable);
     }
 
     @GetMapping("/api/tasks/{id}")
-    public Task getTaskById(@PathVariable long id){
-        return taskService.getTaskByID(id);
+    public TaskResponse getTaskById(@PathVariable long id){
+        return taskService.getTaskById(id);
     }
 
     @PutMapping("/api/tasks/{id}")
-    public Task updateTask(@PathVariable long id, @RequestBody @Valid TaskRequest taskRequest){
+    public TaskResponse updateTask(@PathVariable long id, @RequestBody @Valid TaskRequest taskRequest){
         return taskService.updateTask(id, taskRequest);
     }
 

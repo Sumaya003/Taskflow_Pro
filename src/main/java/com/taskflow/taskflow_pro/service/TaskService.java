@@ -1,6 +1,7 @@
 package com.taskflow.taskflow_pro.service;
 
 import com.taskflow.taskflow_pro.dto.TaskRequest;
+import com.taskflow.taskflow_pro.dto.TaskResponse;
 import com.taskflow.taskflow_pro.exception.TaskNotFoundException;
 import com.taskflow.taskflow_pro.model.Task;
 import com.taskflow.taskflow_pro.repository.TaskRepository;
@@ -23,30 +24,52 @@ public class TaskService {
         return "Hello from TaskFlow Pro";
     }
 
-    public Task saveTask(Task task) {
-        return taskRepository.save(task);
+    public TaskResponse saveTask(Task task) {
+        Task savedTask = taskRepository.save(task);
+        return mapToResponse(savedTask);
     }
 
-    public Page<Task> getAllTasks(Pageable pageable) {
-        return taskRepository.findAll(pageable);
+    public Page<TaskResponse> getAllTasks(Pageable pageable) {
+
+        return taskRepository.findAll(pageable)
+                .map(this::mapToResponse);
     }
 
-    public Task getTaskByID(long id){
-        return taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException("Task not found"));
+    public TaskResponse getTaskById(Long id) {
+
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new TaskNotFoundException("Task not found"));
+
+        return mapToResponse(task);
     }
 
-    public Task updateTask(Long id, TaskRequest  taskRequest) {
-        Task task = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException("Task not found"));
+    public TaskResponse updateTask(Long id, TaskRequest taskRequest) {
+
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new TaskNotFoundException("Task not found"));
 
         task.setTitle(taskRequest.getTitle());
         task.setDescription(taskRequest.getDescription());
         task.setPriority(taskRequest.getPriority());
 
-        return taskRepository.save(task);
+        Task updatedTask = taskRepository.save(task);
+
+        return mapToResponse(updatedTask);
     }
 
     public void deleteTask(Long id){
         Task task = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException("Task not found"));
         taskRepository.delete(task);
+    }
+
+    private TaskResponse mapToResponse(Task task) {
+        TaskResponse response = new TaskResponse();
+
+        response.setId(task.getId());
+        response.setTitle(task.getTitle());
+        response.setDescription(task.getDescription());
+        response.setPriority(task.getPriority());
+
+        return response;
     }
 }
