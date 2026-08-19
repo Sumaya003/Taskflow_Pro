@@ -12,4 +12,5 @@ public class TaskResponse {
     private String title;
     private String description;
     private Priority priority;
+    private UserResponse user;
 }

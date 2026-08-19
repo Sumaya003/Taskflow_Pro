@@ -2,10 +2,13 @@ package com.taskflow.taskflow_pro.service;
 
 import com.taskflow.taskflow_pro.dto.TaskRequest;
 import com.taskflow.taskflow_pro.dto.TaskResponse;
+import com.taskflow.taskflow_pro.dto.UserResponse;
 import com.taskflow.taskflow_pro.exception.TaskNotFoundException;
 import com.taskflow.taskflow_pro.model.Priority;
 import com.taskflow.taskflow_pro.model.Task;
+import com.taskflow.taskflow_pro.model.User;
 import com.taskflow.taskflow_pro.repository.TaskRepository;
+import com.taskflow.taskflow_pro.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -16,9 +19,11 @@ import java.util.List;
 public class TaskService {
 
     private final TaskRepository taskRepository;
+    private final UserRepository userRepository;
 
-    public TaskService(TaskRepository taskRepository) {
+    public TaskService(TaskRepository taskRepository, UserRepository userRepository) {
         this.taskRepository = taskRepository;
+        this.userRepository = userRepository;
     }
 
     public String getHelloMessage() {
@@ -26,11 +31,14 @@ public class TaskService {
     }
 
     public TaskResponse createTask(TaskRequest taskRequest) {
+        User user = userRepository.findById(taskRequest.getUserId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
         Task task = new Task();
         task.setTitle(taskRequest.getTitle());
         task.setDescription(taskRequest.getDescription());
         task.setPriority(taskRequest.getPriority());
+        task.setUser(user);
 
         Task savedTask = taskRepository.save(task);
         return mapToResponse(savedTask);
@@ -90,6 +98,16 @@ public class TaskService {
         response.setTitle(task.getTitle());
         response.setDescription(task.getDescription());
         response.setPriority(task.getPriority());
+
+        if (task.getUser() != null) {
+            UserResponse userResponse = new UserResponse();
+
+            userResponse.setId(task.getUser().getId());
+            userResponse.setName(task.getUser().getName());
+            userResponse.setEmail(task.getUser().getEmail());
+
+            response.setUser(userResponse);
+        }
 
         return response;
     }
