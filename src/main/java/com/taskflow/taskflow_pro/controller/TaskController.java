@@ -3,6 +3,7 @@ package com.taskflow.taskflow_pro.controller;
 
 import com.taskflow.taskflow_pro.dto.TaskRequest;
 import com.taskflow.taskflow_pro.dto.TaskResponse;
+import com.taskflow.taskflow_pro.model.Priority;
 import com.taskflow.taskflow_pro.model.Task;
 import com.taskflow.taskflow_pro.service.TaskService;
 import jakarta.validation.Valid;
@@ -40,6 +41,16 @@ public class TaskController {
     @GetMapping("/api/tasks/{id}")
     public TaskResponse getTaskById(@PathVariable long id){
         return taskService.getTaskById(id);
+    }
+
+    @GetMapping("/api/tasks/priority/{priority}")
+    public List<TaskResponse> getTasksByPriority(@PathVariable Priority priority){
+        return taskService.getTasksByPriority(priority);
+    }
+
+    @GetMapping("/api/tasks/search")
+    public List<TaskResponse> getTasksByTitle(@RequestParam String title){
+        return taskService.searchTasks(title);
     }
 
     @PutMapping("/api/tasks/{id}")

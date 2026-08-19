@@ -3,6 +3,7 @@ package com.taskflow.taskflow_pro.service;
 import com.taskflow.taskflow_pro.dto.TaskRequest;
 import com.taskflow.taskflow_pro.dto.TaskResponse;
 import com.taskflow.taskflow_pro.exception.TaskNotFoundException;
+import com.taskflow.taskflow_pro.model.Priority;
 import com.taskflow.taskflow_pro.model.Task;
 import com.taskflow.taskflow_pro.repository.TaskRepository;
 import org.springframework.data.domain.Page;
@@ -66,6 +67,20 @@ public class TaskService {
     public void deleteTask(Long id){
         Task task = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException("Task not found"));
         taskRepository.delete(task);
+    }
+
+    public List<TaskResponse> getTasksByPriority(Priority priority) {
+        return taskRepository.findByPriority(priority)
+                .stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
+
+    public List<TaskResponse> searchTasks(String title) {
+        return taskRepository.findByTitleContainingIgnoreCase(title)
+                .stream()
+                .map(this::mapToResponse)
+                .toList();
     }
 
     private TaskResponse mapToResponse(Task task) {
