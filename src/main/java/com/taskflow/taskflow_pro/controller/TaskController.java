@@ -23,20 +23,13 @@ public class TaskController {
 
     @GetMapping("/api/hello")
     public String hello(){
-
         return taskService.getHelloMessage();
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/api/tasks")
     public TaskResponse createTask(@RequestBody @Valid TaskRequest taskRequest){
-
-        Task task = new Task();
-
-        task.setTitle(taskRequest.getTitle());
-        task.setDescription(taskRequest.getDescription());
-        task.setPriority(taskRequest.getPriority());
-        return taskService.saveTask(task);
+        return taskService.createTask(taskRequest);
     }
 
     @GetMapping("/api/tasks")

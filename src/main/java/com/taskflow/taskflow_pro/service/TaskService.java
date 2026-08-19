@@ -24,7 +24,13 @@ public class TaskService {
         return "Hello from TaskFlow Pro";
     }
 
-    public TaskResponse saveTask(Task task) {
+    public TaskResponse createTask(TaskRequest taskRequest) {
+
+        Task task = new Task();
+        task.setTitle(taskRequest.getTitle());
+        task.setDescription(taskRequest.getDescription());
+        task.setPriority(taskRequest.getPriority());
+
         Task savedTask = taskRepository.save(task);
         return mapToResponse(savedTask);
     }
