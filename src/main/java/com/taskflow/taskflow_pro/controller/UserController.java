@@ -1,5 +1,7 @@
 package com.taskflow.taskflow_pro.controller;
 
+import com.taskflow.taskflow_pro.dto.LoginRequest;
+import com.taskflow.taskflow_pro.dto.LoginResponse;
 import com.taskflow.taskflow_pro.dto.UserRequest;
 import com.taskflow.taskflow_pro.dto.UserResponse;
 import com.taskflow.taskflow_pro.service.UserService;
@@ -19,5 +21,10 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     public UserResponse createUser(@Valid @RequestBody UserRequest userRequest) {
         return userService.createUser(userRequest);
+    }
+
+    @PostMapping("/login")
+    public LoginResponse login(@Valid @RequestBody LoginRequest request) {
+        return userService.login(request);
     }
 }

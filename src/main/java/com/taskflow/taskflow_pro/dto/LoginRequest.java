@@ -7,9 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserRequest {
-    @NotBlank
-    private String name;
+public class LoginRequest {
 
     @NotBlank
     @Email
