@@ -4,6 +4,7 @@ import com.taskflow.taskflow_pro.dto.LoginRequest;
 import com.taskflow.taskflow_pro.dto.LoginResponse;
 import com.taskflow.taskflow_pro.dto.UserRequest;
 import com.taskflow.taskflow_pro.dto.UserResponse;
+import com.taskflow.taskflow_pro.model.Role;
 import com.taskflow.taskflow_pro.model.User;
 import com.taskflow.taskflow_pro.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,6 +33,7 @@ public class UserService {
         user.setName(request.getName());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRole(Role.USER);
 
         User savedUser = userRepository.save(user);
 
@@ -52,7 +54,10 @@ public class UserService {
             throw new RuntimeException("Invalid email or password");
         }
 
-        String token = jwtService.generateToken(user.getEmail());
+        String token = jwtService.generateToken(
+                user.getEmail(),
+                user.getRole()
+        );
         return new LoginResponse(token);
     }
 }
