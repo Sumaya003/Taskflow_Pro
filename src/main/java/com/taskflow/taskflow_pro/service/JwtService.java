@@ -3,6 +3,7 @@ package com.taskflow.taskflow_pro.service;
 import com.taskflow.taskflow_pro.model.Role;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -12,11 +13,14 @@ import java.util.Date;
 @Service
 public class JwtService {
 
-    private static final String SECRET =
-            "taskflow-pro-super-secret-key-must-be-long-enough";
+    @Value("${jwt.secret}")
+    private String secret;
 
-    private final SecretKey key =
-            Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
+    private SecretKey getSigningKey() {
+        return Keys.hmacShaKeyFor(
+                secret.getBytes(StandardCharsets.UTF_8)
+        );
+    }
 
     public String generateToken(String email, Role role) {
 
@@ -27,13 +31,13 @@ public class JwtService {
                 .claim("role", role.name())
                 .issuedAt(new Date(now))
                 .expiration(new Date(now + 3600000))
-                .signWith(key)
+                .signWith(getSigningKey())
                 .compact();
     }
 
     public String extractEmail(String token) {
         return Jwts.parser()
-                .verifyWith(key)
+                .verifyWith(getSigningKey())
                 .build()
                 .parseSignedClaims(token)
                 .getPayload()
@@ -43,7 +47,7 @@ public class JwtService {
     public boolean isTokenValid(String token) {
         try {
             Jwts.parser()
-                    .verifyWith(key)
+                    .verifyWith(getSigningKey())
                     .build()
                     .parseSignedClaims(token);
 
@@ -55,7 +59,7 @@ public class JwtService {
 
     public String extractRole(String token) {
         return Jwts.parser()
-                .verifyWith(key)
+                .verifyWith(getSigningKey())
                 .build()
                 .parseSignedClaims(token)
                 .getPayload()

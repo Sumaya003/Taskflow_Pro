@@ -30,4 +30,22 @@ public class GlobalExceptionHandler {
                         error.getDefaultMessage()))
                 .toList();
     }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String handleUserNotFound(UserNotFoundException exception) {
+        return exception.getMessage();
+    }
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public String handleInvalidCredentials( InvalidCredentialsException exception) {
+        return exception.getMessage();
+    }
+
+    @ExceptionHandler(DuplicateEmailException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public String handleDuplicateEmail(DuplicateEmailException exception) {
+        return exception.getMessage();
+    }
 }

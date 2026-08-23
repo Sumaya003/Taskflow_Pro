@@ -4,6 +4,7 @@ import com.taskflow.taskflow_pro.dto.TaskRequest;
 import com.taskflow.taskflow_pro.dto.TaskResponse;
 import com.taskflow.taskflow_pro.dto.UserResponse;
 import com.taskflow.taskflow_pro.exception.TaskNotFoundException;
+import com.taskflow.taskflow_pro.exception.UserNotFoundException;
 import com.taskflow.taskflow_pro.model.Priority;
 import com.taskflow.taskflow_pro.model.Task;
 import com.taskflow.taskflow_pro.model.User;
@@ -33,7 +34,7 @@ public class TaskService {
     public TaskResponse createTask(TaskRequest taskRequest, String email) {
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         Task task = new Task();
 
