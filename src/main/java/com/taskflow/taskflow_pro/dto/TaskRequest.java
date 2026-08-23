@@ -17,6 +17,4 @@ public class TaskRequest {
 
     @NotNull
     private Priority priority;
-
-    private Long userId;
 }

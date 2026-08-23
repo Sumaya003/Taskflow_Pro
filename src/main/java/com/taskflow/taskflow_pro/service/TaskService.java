@@ -30,38 +30,50 @@ public class TaskService {
         return "Hello from TaskFlow Pro";
     }
 
-    public TaskResponse createTask(TaskRequest taskRequest) {
-        User user = userRepository.findById(taskRequest.getUserId())
+    public TaskResponse createTask(TaskRequest taskRequest, String email) {
+
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         Task task = new Task();
+
         task.setTitle(taskRequest.getTitle());
         task.setDescription(taskRequest.getDescription());
         task.setPriority(taskRequest.getPriority());
+
         task.setUser(user);
 
         Task savedTask = taskRepository.save(task);
+
         return mapToResponse(savedTask);
     }
 
-    public Page<TaskResponse> getAllTasks(Pageable pageable) {
+    public Page<TaskResponse> getAllTasks(
+            Pageable pageable,
+            String email) {
 
-        return taskRepository.findAll(pageable)
+        return taskRepository
+                .findByUserEmail(email, pageable)
                 .map(this::mapToResponse);
     }
 
-    public TaskResponse getTaskById(Long id) {
+    public TaskResponse getTaskById(Long id, String email) {
 
-        Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new TaskNotFoundException("Task not found"));
+        Task task = taskRepository.findByIdAndUserEmail(id, email)
+                .orElseThrow(() ->
+                        new TaskNotFoundException("Task not found"));
 
         return mapToResponse(task);
     }
 
-    public TaskResponse updateTask(Long id, TaskRequest taskRequest) {
+    public TaskResponse updateTask(
+            Long id,
+            TaskRequest taskRequest,
+            String email) {
 
-        Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new TaskNotFoundException("Task not found"));
+        Task task = taskRepository.findByIdAndUserEmail(id, email)
+                .orElseThrow(() ->
+                        new TaskNotFoundException("Task not found"));
 
         task.setTitle(taskRequest.getTitle());
         task.setDescription(taskRequest.getDescription());
@@ -72,8 +84,12 @@ public class TaskService {
         return mapToResponse(updatedTask);
     }
 
-    public void deleteTask(Long id){
-        Task task = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException("Task not found"));
+    public void deleteTask(Long id, String email) {
+
+        Task task = taskRepository.findByIdAndUserEmail(id, email)
+                .orElseThrow(() ->
+                        new TaskNotFoundException("Task not found"));
+
         taskRepository.delete(task);
     }
 

@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,20 +28,37 @@ public class TaskController {
         return taskService.getHelloMessage();
     }
 
-    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/api/tasks")
-    public TaskResponse createTask(@RequestBody @Valid TaskRequest taskRequest){
-        return taskService.createTask(taskRequest);
+    @ResponseStatus(HttpStatus.CREATED)
+    public TaskResponse createTask(
+            @Valid @RequestBody TaskRequest taskRequest,
+            Authentication authentication) {
+
+        String email = authentication.getName();
+
+        return taskService.createTask(taskRequest, email);
     }
 
     @GetMapping("/api/tasks")
-    public Page<TaskResponse> getAllTasks(Pageable pageable){
-        return taskService.getAllTasks(pageable);
+    public Page<TaskResponse> getAllTasks(
+            Pageable pageable,
+            Authentication authentication) {
+
+        return taskService.getAllTasks(
+                pageable,
+                authentication.getName()
+        );
     }
 
     @GetMapping("/api/tasks/{id}")
-    public TaskResponse getTaskById(@PathVariable long id){
-        return taskService.getTaskById(id);
+    public TaskResponse getTaskById(
+            @PathVariable Long id,
+            Authentication authentication) {
+
+        return taskService.getTaskById(
+                id,
+                authentication.getName()
+        );
     }
 
     @GetMapping("/api/tasks/priority/{priority}")
@@ -54,13 +72,27 @@ public class TaskController {
     }
 
     @PutMapping("/api/tasks/{id}")
-    public TaskResponse updateTask(@PathVariable long id, @RequestBody @Valid TaskRequest taskRequest){
-        return taskService.updateTask(id, taskRequest);
+    public TaskResponse updateTask(
+            @PathVariable Long id,
+            @Valid @RequestBody TaskRequest taskRequest,
+            Authentication authentication) {
+
+        return taskService.updateTask(
+                id,
+                taskRequest,
+                authentication.getName()
+        );
     }
 
     @DeleteMapping("/api/tasks/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteTask(@PathVariable long id){
-        taskService.deleteTask(id);
+    public void deleteTask(
+            @PathVariable Long id,
+            Authentication authentication) {
+
+        taskService.deleteTask(
+                id,
+                authentication.getName()
+        );
     }
 }
