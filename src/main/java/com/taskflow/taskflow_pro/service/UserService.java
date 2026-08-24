@@ -9,9 +9,11 @@ import com.taskflow.taskflow_pro.exception.InvalidCredentialsException;
 import com.taskflow.taskflow_pro.model.Role;
 import com.taskflow.taskflow_pro.model.User;
 import com.taskflow.taskflow_pro.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class UserService {
 
@@ -46,7 +48,7 @@ public class UserService {
         response.setId(savedUser.getId());
         response.setName(savedUser.getName());
         response.setEmail(savedUser.getEmail());
-
+        log.info("User registered with id={}", savedUser.getId());
         return response;
     }
 
@@ -63,6 +65,7 @@ public class UserService {
                 user.getEmail(),
                 user.getRole()
         );
+        log.info("Successful login for user={}", user.getEmail());
         return new LoginResponse(token);
     }
 }

@@ -1,6 +1,7 @@
 package com.taskflow.taskflow_pro.controller;
 
 
+import com.taskflow.taskflow_pro.dto.PageResponse;
 import com.taskflow.taskflow_pro.dto.TaskRequest;
 import com.taskflow.taskflow_pro.dto.TaskResponse;
 import com.taskflow.taskflow_pro.model.Priority;
@@ -40,7 +41,7 @@ public class TaskController {
     }
 
     @GetMapping("/api/tasks")
-    public Page<TaskResponse> getAllTasks(
+    public PageResponse<TaskResponse> getAllTasks(
             Pageable pageable,
             Authentication authentication) {
 
