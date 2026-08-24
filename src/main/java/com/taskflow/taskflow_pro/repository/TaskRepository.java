@@ -10,8 +10,24 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TaskRepository extends JpaRepository<Task, Long> {
-    List<Task> findByPriority(Priority priority);
-    List<Task> findByTitleContainingIgnoreCase(String title);
-    Optional<Task> findByIdAndUserEmail(Long id, String email);
-    Page<Task> findByUserEmail(String email, Pageable pageable);
+
+    Optional<Task> findByIdAndUserEmailAndDeletedFalse(
+            Long id,
+            String email
+    );
+
+    Page<Task> findByUserEmailAndDeletedFalse(
+            String email,
+            Pageable pageable
+    );
+
+    List<Task> findByPriorityAndUserEmailAndDeletedFalse(
+            Priority priority,
+            String email
+    );
+
+    List<Task> findByTitleContainingIgnoreCaseAndUserEmailAndDeletedFalse(
+            String title,
+            String email
+    );
 }

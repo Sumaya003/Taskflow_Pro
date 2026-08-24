@@ -54,13 +54,13 @@ public class TaskService {
             String email) {
 
         return taskRepository
-                .findByUserEmail(email, pageable)
+                .findByUserEmailAndDeletedFalse(email, pageable)
                 .map(this::mapToResponse);
     }
 
     public TaskResponse getTaskById(Long id, String email) {
 
-        Task task = taskRepository.findByIdAndUserEmail(id, email)
+        Task task = taskRepository.findByIdAndUserEmailAndDeletedFalse(id, email)
                 .orElseThrow(() ->
                         new TaskNotFoundException("Task not found"));
 
@@ -72,7 +72,7 @@ public class TaskService {
             TaskRequest taskRequest,
             String email) {
 
-        Task task = taskRepository.findByIdAndUserEmail(id, email)
+        Task task = taskRepository.findByIdAndUserEmailAndDeletedFalse(id, email)
                 .orElseThrow(() ->
                         new TaskNotFoundException("Task not found"));
 
@@ -87,22 +87,29 @@ public class TaskService {
 
     public void deleteTask(Long id, String email) {
 
-        Task task = taskRepository.findByIdAndUserEmail(id, email)
+        Task task = taskRepository.findByIdAndUserEmailAndDeletedFalse(id, email)
                 .orElseThrow(() ->
                         new TaskNotFoundException("Task not found"));
 
-        taskRepository.delete(task);
+        task.setDeleted(true);
+        taskRepository.save(task);
     }
 
-    public List<TaskResponse> getTasksByPriority(Priority priority) {
-        return taskRepository.findByPriority(priority)
+    public List<TaskResponse> getTasksByPriority(Priority priority, String email) {
+        return taskRepository.findByPriorityAndUserEmailAndDeletedFalse(
+                        priority,
+                        email
+                )
                 .stream()
                 .map(this::mapToResponse)
                 .toList();
     }
 
-    public List<TaskResponse> searchTasks(String title) {
-        return taskRepository.findByTitleContainingIgnoreCase(title)
+    public List<TaskResponse> searchTasks(String title, String email) {
+        return taskRepository.findByTitleContainingIgnoreCaseAndUserEmailAndDeletedFalse(
+                        title,
+                        email
+                )
                 .stream()
                 .map(this::mapToResponse)
                 .toList();
@@ -115,6 +122,8 @@ public class TaskService {
         response.setTitle(task.getTitle());
         response.setDescription(task.getDescription());
         response.setPriority(task.getPriority());
+        response.setCreatedAt(task.getCreatedAt());
+        response.setUpdatedAt(task.getUpdatedAt());
 
         if (task.getUser() != null) {
             UserResponse userResponse = new UserResponse();

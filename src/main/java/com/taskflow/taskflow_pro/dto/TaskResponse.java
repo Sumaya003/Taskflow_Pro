@@ -4,6 +4,8 @@ import com.taskflow.taskflow_pro.model.Priority;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 public class TaskResponse {
@@ -13,4 +15,6 @@ public class TaskResponse {
     private String description;
     private Priority priority;
     private UserResponse user;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

@@ -62,13 +62,19 @@ public class TaskController {
     }
 
     @GetMapping("/api/tasks/priority/{priority}")
-    public List<TaskResponse> getTasksByPriority(@PathVariable Priority priority){
-        return taskService.getTasksByPriority(priority);
+    public List<TaskResponse> getTasksByPriority(
+            @PathVariable Priority priority,
+            Authentication authentication) {
+
+        return taskService.getTasksByPriority(
+                priority,
+                authentication.getName()
+        );
     }
 
     @GetMapping("/api/tasks/search")
-    public List<TaskResponse> getTasksByTitle(@RequestParam String title){
-        return taskService.searchTasks(title);
+    public List<TaskResponse> getTasksByTitle(@RequestParam String title, Authentication authentication){
+        return taskService.searchTasks(title,authentication.getName());
     }
 
     @PutMapping("/api/tasks/{id}")
